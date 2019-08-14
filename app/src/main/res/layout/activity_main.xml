@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="activity.MainActivity">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_restart2"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:outlineProvider="bounds"
+        android:text="RESTART"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:icon="@drawable/ic_replay_white_24dp"
+        app:iconPadding="4dp"
+        app:iconTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.257"
+        app:strokeColor="@color/colorPrimary"
+        app:strokeWidth="1dp" />
+
+    <Button
+        android:id="@+id/button_start"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#ff7043"
+        android:backgroundTintMode="src_in"
+        android:text="Start"
+        android:textColor="#FFFFFF"
+        app:icon="@drawable/ic_hourglass_full_white_24dp"
+        app:iconGravity="start"
+        app:iconPadding="4dp"
+        app:iconTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.259"
+        app:strokeColor="@color/colorPrimary"
+        app:strokeWidth="3dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_restart"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:drawableStart="@drawable/ic_skip_next_white_24dp"
+        android:text="SKIP"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:icon="@drawable/ic_skip_next_white_24dp"
+        app:iconGravity="start"
+        app:iconPadding="4dp"
+        app:iconTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.175"
+        app:layout_constraintStart_toEndOf="@+id/button_start"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.257"
+        app:strokeColor="@color/colorPrimary"
+        app:strokeWidth="1dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="monospace"
+        android:text="25:00"
+        android:textAlignment="textEnd"
+        android:textColor="@color/colorPrimary"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.442" />
+
+    <!--<Button-->
+    <!--android:id="@+id/button2"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginEnd="8dp"-->
+    <!--android:backgroundTint="#FFFFFF"-->
+    <!--android:backgroundTintMode="src_in"-->
+    <!--android:drawableLeft="@drawable/ic_replay_white_24dp"-->
+    <!--android:text="Restart"-->
+    <!--android:textColor="#FFFFFF"-->
+    <!--app:layout_constraintEnd_toStartOf="@+id/button_start"-->
+    <!--tools:layout_editor_absoluteY="341dp" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
