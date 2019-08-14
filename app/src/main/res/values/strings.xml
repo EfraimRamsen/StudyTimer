@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Study Timer</string>
+    <string name="start">START</string>
+    <string name="pause">PAUSE</string>
+    <string name="reset">RESET</string>
+    <string name="skip">SKIP</string>
 </resources>
