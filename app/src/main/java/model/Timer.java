@@ -3,8 +3,9 @@ package model;
 import android.os.CountDownTimer;
 
 import java.util.Locale;
-
 import activity.MainActivity;
+
+import com.example.studytimer.R;
 
 public class Timer {
 
@@ -16,7 +17,6 @@ public class Timer {
 
 	private MainActivity mMainActivity;
 
-	//time (millisekunder?)
 	//section int (första 25 min = section 1, paus 5 min section 2, nästa 25 min = 3, paus = 4 ... efter 4 jobb och 3 paus blir det lång paus
 	//status = work, break, longbreak
 
@@ -43,19 +43,29 @@ public class Timer {
 
 			@Override
 			public void onFinish() {
-
+				mTimerRunning = false;
+				mMainActivity.setStartStopButtonText(R.string.start);
 			}
 		}.start();
 
 		mTimerRunning = true;
-
+		mMainActivity.setStartStopButtonText(R.string.pause);
 	}
 
 	public void pauseTimer(){
+		if(mCountdownTimer != null){
+				mCountdownTimer.cancel();
+		}
+		mTimerRunning = false;
+		mMainActivity.setStartStopButtonText(R.string.start);
+
 
 	}
 
 	public void resetTimer(){
+		mTimeLeftInMillis = START_TIME_IN_MILLIS;
+		updateCountdownText();
+
 
 	}
 

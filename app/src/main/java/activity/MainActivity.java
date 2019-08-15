@@ -3,7 +3,6 @@ package activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
 			public void onClick(View v) {
 				if(mTimer.isTimerRunning()){
 					mTimer.pauseTimer();
-					mStartStopButton.setText(R.string.pause);
 				}
 				else{
 					mTimer.startTimer();
@@ -49,14 +47,28 @@ public class MainActivity extends AppCompatActivity {
 		mResetButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(mTimer.isTimerRunning()){
+					mTimer.pauseTimer();
+					mTimer.resetTimer();
+					mTimer.startTimer();
+				}
+				else{
+					mTimer.pauseTimer();
+					mTimer.resetTimer();
+				}
 
 			}
 		});
+
+		mTimer.updateCountdownText();
 	}
 
 	public void setCountdownText(String countdownText) {
 		mCountdownText.setText(countdownText);
 	}
 
+	public void setStartStopButtonText(int buttonTextId){
+		mStartStopButton.setText(buttonTextId);
+	}
 
 }
