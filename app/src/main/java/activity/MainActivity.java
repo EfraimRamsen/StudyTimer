@@ -14,11 +14,8 @@ import model.Timer;
 public class MainActivity extends AppCompatActivity {
 
 	private TextView mCountdownText;
-	private Button mStartStopButton;
-	private Button mResetButton;
+	private Button mStartStopButton, mResetButton, mSkipButton;
 	private Timer mTimer;
-
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 		mCountdownText = findViewById(R.id.text_countdown);
 		mStartStopButton = findViewById(R.id.button_start);
 		mResetButton = findViewById(R.id.button_reset);
+		mSkipButton = findViewById(R.id.button_skip);
+
 
 		//TODO Glöm inte fixa onSaveInstancestate etc.
 		mTimer = new Timer(this);
@@ -57,6 +56,22 @@ public class MainActivity extends AppCompatActivity {
 					mTimer.resetTimer();
 				}
 
+			}
+		});
+
+		mSkipButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mTimer.isTimerRunning()) {
+					mTimer.pauseTimer();
+					mTimer.nextRound();
+					mTimer.startTimer();
+
+				}
+				else{
+					mTimer.pauseTimer();
+					mTimer.nextRound();
+				}
 			}
 		});
 

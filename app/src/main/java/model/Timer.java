@@ -9,13 +9,22 @@ import com.example.studytimer.R;
 
 public class Timer {
 
-	private static final long START_TIME_IN_MILLIS = 1500000;
-	private CountDownTimer mCountdownTimer;
-	private boolean mTimerRunning;
+	private static final long START_TIME_IN_MILLIS_WORK = 1500000; //25 min
+	private static final long START_TIME_IN_MILLIS_BREAK = 300000; //5 min
+	private static final long START_TIME_IN_MILLIS_LONG_BREAK = 120000; // 20 min
 
-	private long mTimeLeftInMillis = START_TIME_IN_MILLIS; //25 min
+	private static final int TIMER_TYPE_WORK = 0;
+	private static final int TIMER_TYPE_BREAK = 1;
+	private static final int TIMER_TYPE_LONG_BREAK = 2;
 
 	private MainActivity mMainActivity;
+	private CountDownTimer mCountdownTimer;
+
+	private boolean mTimerRunning;
+	private long mTimeLeftInMillis = START_TIME_IN_MILLIS_WORK;
+
+	private int mActiveTimerType = TIMER_TYPE_WORK;
+	private int mCounter = 0;
 
 	//section int (första 25 min = section 1, paus 5 min section 2, nästa 25 min = 3, paus = 4 ... efter 4 jobb och 3 paus blir det lång paus
 	//status = work, break, longbreak
@@ -43,8 +52,9 @@ public class Timer {
 
 			@Override
 			public void onFinish() {
-				mTimerRunning = false;
-				mMainActivity.setStartStopButtonText(R.string.start);
+//				mTimerRunning = false;
+//				mMainActivity.setStartStopButtonText(R.string.start);
+				nextRound();
 			}
 		}.start();
 
@@ -63,9 +73,8 @@ public class Timer {
 	}
 
 	public void resetTimer(){
-		mTimeLeftInMillis = START_TIME_IN_MILLIS;
+		mTimeLeftInMillis = START_TIME_IN_MILLIS_WORK;
 		updateCountdownText();
-
 
 	}
 
@@ -79,6 +88,38 @@ public class Timer {
 		mMainActivity.setCountdownText(timeLeftFormatted);
 	}
 
+	public void nextRound(){
+		if(mCounter == 7){
+			mCounter = 0;
+		}
+		else{
+			mCounter++;
+		}
+
+		switch(mCounter){
+			case 0:
+			case 2:
+			case 4:
+			case 6:
+				mActiveTimerType = TIMER_TYPE_WORK;
+				mTimeLeftInMillis = START_TIME_IN_MILLIS_WORK;
+				break;
+			case 1:
+			case 3:
+			case 5:
+				mActiveTimerType = TIMER_TYPE_BREAK;
+				mTimeLeftInMillis = START_TIME_IN_MILLIS_BREAK;
+				break;
+			case 7:
+				mActiveTimerType = TIMER_TYPE_LONG_BREAK;
+				mTimeLeftInMillis = TIMER_TYPE_LONG_BREAK;
+				break;
+			default:
+				System.out.println("ERROR mCounter switch");
+		}
+
+		updateCountdownText();
+	}
 
 
 
