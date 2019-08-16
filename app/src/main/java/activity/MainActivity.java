@@ -34,44 +34,46 @@ public class MainActivity extends AppCompatActivity {
 		mStartStopButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(mTimer.isTimerRunning()){
-					mTimer.pauseTimer();
-				}
-				else{
-					mTimer.startTimer();
-				}
+				mTimer.pressStartStopButton();
+//				if(mTimer.isTimerRunning()){
+//					mTimer.pauseTimer();
+//				}
+//				else{
+//					mTimer.startTimer();
+//				}
 			}
 		});
 
 		mResetButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(mTimer.isTimerRunning()){
-					mTimer.pauseTimer();
-					mTimer.resetTimer();
-					mTimer.startTimer();
-				}
-				else{
-					mTimer.pauseTimer();
-					mTimer.resetTimer();
-				}
-
+				mTimer.pressResetButton();
+//				if(mTimer.isTimerRunning()){
+//					mTimer.pauseTimer();
+//					mTimer.resetTimer();
+//					mTimer.startTimer();
+//				}
+//				else{
+//					mTimer.pauseTimer();
+//					mTimer.resetTimer();
+//				}
 			}
 		});
 
 		mSkipButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mTimer.isTimerRunning()) {
-					mTimer.pauseTimer();
-					mTimer.nextRound();
-					mTimer.startTimer();
-
-				}
-				else{
-					mTimer.pauseTimer();
-					mTimer.nextRound();
-				}
+				mTimer.pressSkipButton();
+//				if (mTimer.isTimerRunning()) {
+//					mTimer.pauseTimer();
+//					mTimer.nextRound();
+//					mTimer.startTimer();
+//
+//				}
+//				else{
+//					mTimer.pauseTimer();
+//					mTimer.nextRound();
+//				}
 			}
 		});
 

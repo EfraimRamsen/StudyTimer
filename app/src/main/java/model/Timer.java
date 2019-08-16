@@ -2,6 +2,7 @@ package model;
 
 import android.os.CountDownTimer;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import activity.MainActivity;
 
@@ -11,7 +12,7 @@ public class Timer {
 
 	private static final long START_TIME_IN_MILLIS_WORK = 1500000; //25 min
 	private static final long START_TIME_IN_MILLIS_BREAK = 300000; //5 min
-	private static final long START_TIME_IN_MILLIS_LONG_BREAK = 120000; // 20 min
+	private static final long START_TIME_IN_MILLIS_LONG_BREAK = 1200000; // 20 min
 
 	private static final int TIMER_TYPE_WORK = 0;
 	private static final int TIMER_TYPE_BREAK = 1;
@@ -21,25 +22,30 @@ public class Timer {
 	private CountDownTimer mCountdownTimer;
 
 	private boolean mTimerRunning;
-	private long mTimeLeftInMillis = START_TIME_IN_MILLIS_WORK;
+	private long mTimeLeftInMillis;
 
 	private int mActiveTimerType = TIMER_TYPE_WORK;
 	private int mCounter = 0;
 
-	//section int (första 25 min = section 1, paus 5 min section 2, nästa 25 min = 3, paus = 4 ... efter 4 jobb och 3 paus blir det lång paus
-	//status = work, break, longbreak
-
+	private ArrayList<TimerEvent> mTimerEventArrayList = new ArrayList<>();
 
 	public Timer(MainActivity m){
 		mMainActivity = m;
+
+		mTimerEventArrayList.add(new TimerEvent("Work", START_TIME_IN_MILLIS_WORK, false));
+		mTimerEventArrayList.add(new TimerEvent("Break", START_TIME_IN_MILLIS_BREAK, true));
+		mTimerEventArrayList.add(new TimerEvent("Work", START_TIME_IN_MILLIS_WORK, false));
+		mTimerEventArrayList.add(new TimerEvent("Break", START_TIME_IN_MILLIS_BREAK, true));
+		mTimerEventArrayList.add(new TimerEvent("Work", START_TIME_IN_MILLIS_WORK, false));
+		mTimerEventArrayList.add(new TimerEvent("Break", START_TIME_IN_MILLIS_BREAK, true));
+		mTimerEventArrayList.add(new TimerEvent("Work", START_TIME_IN_MILLIS_WORK, false));
+		mTimerEventArrayList.add(new TimerEvent("Long break", START_TIME_IN_MILLIS_LONG_BREAK, true));
+
+		mTimeLeftInMillis = mTimerEventArrayList.get(0).getStartTime();
 	}
 
 	public boolean isTimerRunning() {
 		return mTimerRunning;
-	}
-
-	public void setTimerRunning(boolean timerRunning) {
-		mTimerRunning = timerRunning;
 	}
 
 	public void startTimer(){
@@ -52,14 +58,12 @@ public class Timer {
 
 			@Override
 			public void onFinish() {
-//				mTimerRunning = false;
-//				mMainActivity.setStartStopButtonText(R.string.start);
 				nextRound();
 			}
 		}.start();
 
 		mTimerRunning = true;
-		mMainActivity.setStartStopButtonText(R.string.pause);
+		mMainActivity.setStartStopButtonText(R.string.pause_string);
 	}
 
 	public void pauseTimer(){
@@ -67,14 +71,23 @@ public class Timer {
 				mCountdownTimer.cancel();
 		}
 		mTimerRunning = false;
-		mMainActivity.setStartStopButtonText(R.string.start);
-
-
+		mMainActivity.setStartStopButtonText(R.string.start_string);
 	}
 
 	public void resetTimer(){
-		mTimeLeftInMillis = START_TIME_IN_MILLIS_WORK;
-		updateCountdownText();
+		switch (mActiveTimerType){
+			case TIMER_TYPE_WORK:
+				mTimeLeftInMillis = START_TIME_IN_MILLIS_WORK;
+				break;
+			case TIMER_TYPE_BREAK:
+				mTimeLeftInMillis = START_TIME_IN_MILLIS_BREAK;
+				break;
+			case TIMER_TYPE_LONG_BREAK:
+				mTimeLeftInMillis = START_TIME_IN_MILLIS_LONG_BREAK;
+				break;
+			default:
+				System.out.println("ERROR in resetTimer()");
+		}
 
 	}
 
@@ -117,57 +130,40 @@ public class Timer {
 			default:
 				System.out.println("ERROR mCounter switch");
 		}
-
-		updateCountdownText();
 	}
 
+	public void pressStartStopButton(){
+		if(isTimerRunning()){
+			pauseTimer();
+		}
+		else{
+			startTimer();
+		}
+	}
 
+	public void pressResetButton(){
+		if(mTimerRunning){
+			pauseTimer();
+			resetTimer();
+			startTimer();
+		}
+		else{
+			pauseTimer();
+			resetTimer();
+			updateCountdownText();
+		}
+	}
 
-//	public void startStop() {
-//		if(timerRunning){
-//			stopTimer();
-//		}
-//		else{
-//			startTimer();
-//		}
-//	}
-//
-//	public void startTimer(){
-//		countDownTimer = new CountDownTimer(timeLeftInMilliseconds, 1000) {
-//			@Override
-//			public void onTick(long millisUntilFinished) {
-//				timeLeftInMilliseconds = millisUntilFinished;
-//				updateTimer();
-//			}
-//
-//			@Override
-//			public void onFinish() {
-//
-//			}
-//		}.start();
-//
-//		mStartStopButton.setText(R.string.pause);
-//		timerRunning = true;
-//	}
-//
-//	public void stopTimer() {
-//		countDownTimer.cancel();
-//		mStartStopButton.setText(R.string.start);
-//		timerRunning = false;
-//	}
-//
-//	public void updateTimer(){
-//		int minutes = (int) timeLeftInMilliseconds / 60000;
-//		int seconds = (int) timeLeftInMilliseconds % 60000 / 1000;
-//
-//		String timeLeftText;
-//
-//		timeLeftText = "" + minutes;
-//		timeLeftText += ":";
-//
-//		if(seconds < 10) timeLeftText += "0";
-//		timeLeftText += "" + seconds;
-//
-//		mCountdownText.setText(timeLeftText);
-//	}
+	public void pressSkipButton(){
+		if(isTimerRunning()){
+			pauseTimer();
+			nextRound();
+			startTimer();
+		}
+		else{
+			pauseTimer();
+			nextRound();
+			updateCountdownText();
+		}
+	}
 }
