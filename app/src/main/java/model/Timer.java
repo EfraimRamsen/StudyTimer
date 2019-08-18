@@ -79,20 +79,7 @@ public class Timer {
 	}
 
 	public void resetTimer(){
-		switch (mActiveTimerType){
-			case TIMER_TYPE_WORK:
-				mTimeLeftInMillis = START_TIME_IN_MILLIS_WORK;
-				break;
-			case TIMER_TYPE_BREAK:
-				mTimeLeftInMillis = START_TIME_IN_MILLIS_BREAK;
-				break;
-			case TIMER_TYPE_LONG_BREAK:
-				mTimeLeftInMillis = START_TIME_IN_MILLIS_LONG_BREAK;
-				break;
-			default:
-				System.out.println("ERROR in resetTimer()");
-		}
-
+		resetToStartTime();
 	}
 
 	public void updateCountdownText(){
@@ -107,35 +94,17 @@ public class Timer {
 
 	public void nextRound(){
 
+		if(mActiveTimerEventIndex == mTimerEventArrayList.size()-1){
+			mActiveTimerEventIndex = 0;
+		}
+		else{
+			mActiveTimerEventIndex++;
+		}
+		resetToStartTime();
+	}
 
-//		if(mCounter == 7){
-//			mCounter = 0;
-//		}
-//		else{
-//			mCounter++;
-//		}
-//
-//		switch(mCounter){
-//			case 0:
-//			case 2:
-//			case 4:
-//			case 6:
-//				mActiveTimerType = TIMER_TYPE_WORK;
-//				mTimeLeftInMillis = START_TIME_IN_MILLIS_WORK;
-//				break;
-//			case 1:
-//			case 3:
-//			case 5:
-//				mActiveTimerType = TIMER_TYPE_BREAK;
-//				mTimeLeftInMillis = START_TIME_IN_MILLIS_BREAK;
-//				break;
-//			case 7:
-//				mActiveTimerType = TIMER_TYPE_LONG_BREAK;
-//				mTimeLeftInMillis = TIMER_TYPE_LONG_BREAK;
-//				break;
-//			default:
-//				System.out.println("ERROR mCounter switch");
-//		}
+	public void resetToStartTime(){
+		mTimeLeftInMillis = mTimerEventArrayList.get(mActiveTimerEventIndex).getStartTime();
 	}
 
 	public void pressStartStopButton(){
