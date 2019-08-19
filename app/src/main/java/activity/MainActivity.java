@@ -3,6 +3,8 @@ package activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -78,6 +80,13 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		mTimer.updateCountdownText();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu){
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.my_menu, menu);
+		return true;
 	}
 
 	public void setCountdownText(String countdownText) {
