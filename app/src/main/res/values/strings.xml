@@ -7,4 +7,5 @@
     <string name="work_string">Work</string>
     <string name="break_string">Break</string>
     <string name="new_photo">New photo</string>
+    <string name="image_view_description">Area to display photo of previous work</string>
 </resources>
