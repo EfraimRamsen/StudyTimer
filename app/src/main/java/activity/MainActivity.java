@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.studytimer.R;
@@ -16,7 +17,8 @@ import model.Timer;
 public class MainActivity extends AppCompatActivity {
 
 	private TextView mCountdownText;
-	private Button mStartStopButton, mResetButton, mSkipButton;
+	private ImageView mImageView;
+	private Button mStartStopButton, mResetButton, mSkipButton, mCameraButton;
 	private Timer mTimer;
 
 	@Override
@@ -28,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
 		mStartStopButton = findViewById(R.id.button_start);
 		mResetButton = findViewById(R.id.button_reset);
 		mSkipButton = findViewById(R.id.button_skip);
-
+		mCameraButton = findViewById(R.id.button_camera);
+		mImageView = findViewById(R.id.photo_view);
 
 		//TODO Glöm inte fixa onSaveInstancestate etc.
 		mTimer = new Timer(this);
