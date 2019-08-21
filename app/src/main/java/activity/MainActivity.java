@@ -1,10 +1,16 @@
 package activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,69 +22,50 @@ import model.Timer;
 
 public class MainActivity extends AppCompatActivity {
 
+	public static final int CAMERA_REQUEST_CODE = 10;
 	private TextView mCountdownText;
 	private ImageView mImageView;
-	private Button mStartStopButton, mResetButton, mSkipButton, mCameraButton;
+	private Button mStartStopButton;
 	private Timer mTimer;
+	private Context mContext = this.getApplicationContext();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Toolbar myToolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(myToolbar);
 
 		mCountdownText = findViewById(R.id.text_countdown);
 		mStartStopButton = findViewById(R.id.button_start);
-		mResetButton = findViewById(R.id.button_reset);
-		mSkipButton = findViewById(R.id.button_skip);
-		mCameraButton = findViewById(R.id.button_camera);
+		Button resetButton = findViewById(R.id.button_reset);
+		Button skipButton = findViewById(R.id.button_skip);
+
 		mImageView = findViewById(R.id.photo_view);
 
 		//TODO Glöm inte fixa onSaveInstancestate etc.
 		mTimer = new Timer(this);
 
+
+
 		mStartStopButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mTimer.pressStartStopButton();
-//				if(mTimer.isTimerRunning()){
-//					mTimer.pauseTimer();
-//				}
-//				else{
-//					mTimer.startTimer();
-//				}
 			}
 		});
 
-		mResetButton.setOnClickListener(new View.OnClickListener() {
+		resetButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mTimer.pressResetButton();
-//				if(mTimer.isTimerRunning()){
-//					mTimer.pauseTimer();
-//					mTimer.resetTimer();
-//					mTimer.startTimer();
-//				}
-//				else{
-//					mTimer.pauseTimer();
-//					mTimer.resetTimer();
-//				}
 			}
 		});
 
-		mSkipButton.setOnClickListener(new View.OnClickListener() {
+		skipButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mTimer.pressSkipButton();
-//				if (mTimer.isTimerRunning()) {
-//					mTimer.pauseTimer();
-//					mTimer.nextRound();
-//					mTimer.startTimer();
-//
-//				}
-//				else{
-//					mTimer.pauseTimer();
-//					mTimer.nextRound();
-//				}
 			}
 		});
 
@@ -87,13 +74,39 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.my_menu, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.my_menu,menu);
+		return super.onCreateOptionsMenu(menu);
 	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		switch (item.getItemId()){
+			case R.id.button_camera:
+				//start camera
+				Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		super.onActivityResult(requestCode, resultCode,data);
+
+		if(resultCode == RESULT_OK && requestCode == CAMERA_REQUEST_CODE){
+			//Result from camera
+			Bitmap cameraImage = (Bitmap) data.getExtras().get("data");
+
+			mImageView.setImageBitmap(cameraImage);
+		}
+	}
+
 
 	public void setCountdownText(String countdownText) {
 		mCountdownText.setText(countdownText);
+
 	}
 
 	public void setStartStopButtonText(int buttonTextId){
