@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	@Override
+	@Override //TODO Jobba med att skriva bilden som kommer till enhetens minne istället. Kapitel 16
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		super.onActivityResult(requestCode, resultCode,data);
 
