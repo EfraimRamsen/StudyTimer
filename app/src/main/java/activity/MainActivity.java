@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.studytimer.R;
 
+import model.Camera;
 import model.Timer;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 	private ImageView mImageView;
 	private Button mStartStopButton;
 	private Timer mTimer;
-	private Context mContext = this.getApplicationContext();
+	private Context mContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 		Button skipButton = findViewById(R.id.button_skip);
 
 		mImageView = findViewById(R.id.photo_view);
+
+		mContext = this.getApplicationContext();
 
 		//TODO Glöm inte fixa onSaveInstancestate etc.
 		mTimer = new Timer(this);
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
 		getMenuInflater().inflate(R.menu.my_menu,menu);
+
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -83,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
 		switch (item.getItemId()){
 			case R.id.button_camera:
 				//start camera
-				Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+				new Camera(this).startCamera();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -97,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
 
 		if(resultCode == RESULT_OK && requestCode == CAMERA_REQUEST_CODE){
 			//Result from camera
-			Bitmap cameraImage = (Bitmap) data.getExtras().get("data");
+//			Bitmap cameraImage = (Bitmap) data.getExtras().get(MediaStore.EXTRA_OUTPUT); // rad 101
 
-			mImageView.setImageBitmap(cameraImage);
+			mImageView.setVisibility(View.INVISIBLE);//TODO FUNKAR
 		}
 	}
 
@@ -112,5 +114,7 @@ public class MainActivity extends AppCompatActivity {
 	public void setStartStopButtonText(int buttonTextId){
 		mStartStopButton.setText(buttonTextId);
 	}
+
+
 
 }
