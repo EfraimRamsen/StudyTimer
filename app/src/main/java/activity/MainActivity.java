@@ -2,12 +2,13 @@ package activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 	private Button mStartStopButton;
 	private Timer mTimer;
 	private Context mContext;
+	private Camera mCamera;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +43,13 @@ public class MainActivity extends AppCompatActivity {
 		Button resetButton = findViewById(R.id.button_reset);
 		Button skipButton = findViewById(R.id.button_skip);
 
-		mImageView = findViewById(R.id.photo_view);
+		mImageView = (ImageView) findViewById(R.id.photo_view);
 
 		mContext = this.getApplicationContext();
 
 		//TODO Glöm inte fixa onSaveInstancestate etc.
 		mTimer = new Timer(this);
+		mCamera = new Camera(this);
 
 
 
@@ -98,10 +101,21 @@ public class MainActivity extends AppCompatActivity {
 		super.onActivityResult(requestCode, resultCode,data);
 
 		if(resultCode == RESULT_OK && requestCode == CAMERA_REQUEST_CODE){
+
+			Uri uri = FileProvider.getUriForFile(this,
+					"com.example.studytimer.fileprovider",
+					mCamera.getMPhotoFile());
+
+			this.revokeUriPermission(uri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+			mCamera.updatePhotoView();
+
 			//Result from camera
 //			Bitmap cameraImage = (Bitmap) data.getExtras().get(MediaStore.EXTRA_OUTPUT); // rad 101
 
-			mImageView.setVisibility(View.INVISIBLE);//TODO FUNKAR
+//			mImageView.setVisibility(View.INVISIBLE);//TODO FUNKAR
+
+
 		}
 	}
 
@@ -115,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 		mStartStopButton.setText(buttonTextId);
 	}
 
-
-
+	public void setImageView(Bitmap imageView) {
+		mImageView.setImageBitmap(imageView);
+	}
 }
