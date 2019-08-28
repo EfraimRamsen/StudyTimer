@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
 		super.onWindowFocusChanged(hasFocus);
 		if(mCamera.getCameraFile() != null && mCamera.getCameraFile().exists() && hasFocus)
 			mCamera.updateImageViewFromFile();
+			mImageView.setBackgroundResource(android.R.color.transparent);//TODO fixa så den här raden bara körs när ny bild laddas in!
 	}
 
 //	protected void onActivityResult(int requestCode,
