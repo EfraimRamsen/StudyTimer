@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -28,6 +29,7 @@ import java.util.Date;
 
 import model.Camera;
 import model.Timer;
+import static model.Camera.FILE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,18 +44,28 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState){
 		super.onSaveInstanceState(savedInstanceState);
-		savedInstanceState.putString("currentPhotoPath",currentPhotoPath);
+		savedInstanceState.putSerializable(FILE,mCamera.getCameraFile());
+
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		mTimer = new Timer(this);
+		mCamera = new Camera(this);
+
 		if(savedInstanceState != null){
-			currentPhotoPath = savedInstanceState.getString("currentPhotoPath");
+			mCamera.setCameraFile((File)savedInstanceState.getSerializable(FILE)) ;
 		}
 
 		setContentView(R.layout.activity_main);
+		mImageView = findViewById(R.id.photo_view);
+
+//		if(mCamera.getCameraFile() != null){
+//			mCamera.updateImageViewFromFile();
+//		}
+
 		Toolbar myToolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(myToolbar);
 
@@ -62,13 +74,11 @@ public class MainActivity extends AppCompatActivity {
 		Button resetButton = findViewById(R.id.button_reset);
 		Button skipButton = findViewById(R.id.button_skip);
 
-		mImageView = findViewById(R.id.photo_view);
 
 		mContext = this.getApplicationContext();
 
 		//TODO Glöm inte fixa onSaveInstancestate etc.
-		mTimer = new Timer(this);
-//		mCamera = new Camera(this);
+
 
 
 
@@ -107,86 +117,14 @@ public class MainActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()){
 			case R.id.button_camera:
-				//start camera
-//				new Camera(this).startCamera();
-				dispatchTakePictureIntent();
-				setPic();
+
+				mCamera.startCamera();
+
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
 	}
-
-	//TODO Gör om till egna klasser nedan
-	private void dispatchTakePictureIntent() {
-		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		// Ensure that there's a camera activity to handle the intent
-		if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-			// Create the File where the photo should go
-			File photoFile = null;
-			try {
-				photoFile = createImageFile();
-			} catch (IOException ex) {
-				// Error occurred while creating the File
-				System.out.println("ERROR creating the file in dispatchTakePictureIntent()");
-			}
-			// Continue only if the File was successfully created
-			if (photoFile != null) {
-				Uri photoURI = FileProvider.getUriForFile(this,
-						"com.example.android.fileprovider",
-						photoFile);
-				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-				startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
-			}
-		}
-	}
-
-
-	String currentPhotoPath;
-
-	private File createImageFile() throws IOException {
-		// Create an image file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-		String imageFileName = "JPEG_" + timeStamp + "_";
-		File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-		File image = File.createTempFile(
-				imageFileName,  /* prefix */
-				".jpg",         /* suffix */
-				storageDir      /* directory */
-		);
-
-		// Save a file: path for use with ACTION_VIEW intents
-		currentPhotoPath = image.getAbsolutePath();
-		return image;
-	}
-
-	private void setPic() {
-		// Get the dimensions of the View
-		int targetW = mImageView.getWidth();
-		int targetH = mImageView.getHeight();
-
-		// Get the dimensions of the bitmap
-		BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-		bmOptions.inJustDecodeBounds = true;
-
-		int photoW = bmOptions.outWidth;
-		int photoH = bmOptions.outHeight;
-
-		// Determine how much to scale down the image
-		int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-		// Decode the image file into a Bitmap sized to fill the View
-		bmOptions.inJustDecodeBounds = false;
-		bmOptions.inSampleSize = scaleFactor;
-		bmOptions.inPurgeable = true;
-
-		Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath/*, bmOptions*/);
-		mImageView.setImageBitmap(bitmap);
-	}
-
-
-	//TODO *** Kamerakod slut ***
-
 
 	public void setCountdownText(String countdownText) {
 		mCountdownText.setText(countdownText);
@@ -196,8 +134,36 @@ public class MainActivity extends AppCompatActivity {
 	public void setStartStopButtonText(int buttonTextId){
 		mStartStopButton.setText(buttonTextId);
 	}
+
+	public ImageView getImageView() {
+		return mImageView;
+	}
+
+	public void onWindowFocusChanged(boolean hasFocus){
+		super.onWindowFocusChanged(hasFocus);
+		if(mCamera.getCameraFile() != null && mCamera.getCameraFile().exists() && hasFocus)
+			mCamera.updateImageViewFromFile();
+	}
+
+//	protected void onActivityResult(int requestCode,
+//	                                int resultCode,
+//	                                Intent data) {
+//		if (requestCode == CAMERA_REQUEST_CODE) {
+//			if (resultCode == RESULT_OK) {
+//				//Bilden sparad till den plats vi angav i intentetIntent. Bilden kommer bytas ut
+//				//Då aktiviteten blir synlig
 //
-//	public void setImageView(Bitmap imageView) {
-//		mImageView.setImageBitmap(imageView);
+//
+//				/* Hade vi inte angivit platsen så hade vi istället kunnat
+//				 * göra som följer. Vi kan dock få en bild av sämre kvalitet
+//				 * imView.setImageBitmap((Bitmap) data.getExtras().get("data"));
+//				 */
+//			} else if (resultCode == RESULT_CANCELED) {
+//				// Användaren valde att inte ta en bild
+//			} else {
+//				mCamera.setCameraFile(null); // Något galet inträffade skippa att byta bilden till en egen
+//			}
+//		}
+//
 //	}
 }
