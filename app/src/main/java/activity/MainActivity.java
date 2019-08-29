@@ -34,7 +34,6 @@ import static model.Camera.FILE;
 
 public class MainActivity extends AppCompatActivity {
 
-	public static final int CAMERA_REQUEST_CODE = 10;
 	private TextView mCountdownText;
 	private ImageView mImageView;
 	private Button mStartStopButton;
@@ -42,10 +41,12 @@ public class MainActivity extends AppCompatActivity {
 	private Context mContext;
 	private Camera mCamera;
 
+	public static final int CAMERA_REQUEST_CODE = 10;
+	private static final String KEY_ = "?";//TODO
+
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState){
 		super.onSaveInstanceState(savedInstanceState);
-		savedInstanceState.putSerializable(FILE,mCamera.getCameraFile());
 
 	}
 
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 		mCamera = new Camera(this);
 
 		if(savedInstanceState != null){
-			mCamera.setCameraFile((File)savedInstanceState.getSerializable(FILE)) ;
+
 		}
 
 		setContentView(R.layout.activity_main);
@@ -142,8 +143,10 @@ public class MainActivity extends AppCompatActivity {
 
 	public void onWindowFocusChanged(boolean hasFocus){
 		super.onWindowFocusChanged(hasFocus);
-		if(mCamera.getCameraFile() != null && mCamera.getCameraFile().exists() && hasFocus)
-			mCamera.updateImageViewFromFile();
+		if(mCamera.getCameraFile() != null && mCamera.getCameraFile().exists() && hasFocus){
+			updateImageView();
+		}
+//			mCamera.updateImageViewFromFile();
 	}
 
 	public int getBreakImageResId(int imageNumber){
