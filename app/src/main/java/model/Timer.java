@@ -4,6 +4,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -12,7 +13,7 @@ import activity.MainActivity;
 import com.example.studytimer.R;
 
 public class Timer {
-
+	private final static String TAG = "Timer";
 	private static final long START_TIME_IN_MILLIS_WORK = 1500000; //25 min
 //	private static final long START_TIME_IN_MILLIS_BREAK = 300000; //5 min
 	private static final long START_TIME_IN_MILLIS_BREAK = 3000; // For testing, 3 seconds
@@ -56,12 +57,9 @@ public class Timer {
 
 			@Override
 			public void onFinish() {
-				// Play notification sound when work session or break is over
-				Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-				Ringtone r = RingtoneManager.getRingtone(mMainActivity.getApplicationContext(), notification);
-				r.play();
 
-				nextRound();
+				nextRoundWithSound();
+
 
 			}
 		}.start();
@@ -92,6 +90,15 @@ public class Timer {
 		mMainActivity.setCountdownText(timeLeftFormatted);
 	}
 
+	public void nextRoundWithSound(){
+		// Play notification sound when work session or break is over
+		Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		Ringtone r = RingtoneManager.getRingtone(mMainActivity.getApplicationContext(), notification);
+		r.play();
+		Log.i(TAG, "Playing notification sound");
+		nextRound();
+	}
+
 	public void nextRound(){
 
 		if(mActiveTimerEventIndex == mTimerEventArrayList.size()-1){
@@ -105,12 +112,10 @@ public class Timer {
 
 		if(isTimerRunning()){
 			pauseTimer();
-//			nextRound();
 			startTimer();
 		}
 		else{
 			pauseTimer();
-//			nextRound();
 			updateCountdownText();
 		}
 
@@ -142,20 +147,6 @@ public class Timer {
 			resetTimer();
 			updateCountdownText();
 		}
-	}
-
-	public void pressSkipButton(){
-		nextRound();
-//		if(isTimerRunning()){
-//			pauseTimer();
-//			nextRound();
-//			startTimer();
-//		}
-//		else{
-//			pauseTimer();
-//			nextRound();
-//			updateCountdownText();
-//		}
 	}
 
 	public ArrayList<TimerEvent> getTimerEventArrayList() {

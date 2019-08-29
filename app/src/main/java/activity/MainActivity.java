@@ -34,6 +34,10 @@ import model.TimerEvent;
 
 import static model.Camera.FILE;
 
+/**
+ * This class handles the buttons and imageView visible on activity_main.xml and my_menu.xml
+ * @author Efraim
+ */
 public class MainActivity extends AppCompatActivity {
 
 	private TextView mCountdownText;
@@ -52,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
 	private static final String KEY_BREAK_IMAGE_NUMBER = "brin";
 
 
-
-
+	/**
+	 * Saves certain values on rotation or closed activity
+	 * @param savedInstanceState, Bundle
+	 */
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState){
 		super.onSaveInstanceState(savedInstanceState);
@@ -64,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
 		savedInstanceState.putInt(KEY_BREAK_IMAGE_NUMBER,mBreakImageNumber);
 	}
 
+	/**
+	 * This is run on the creation of the application; at first start, rotation and new activity
+	 * @param savedInstanceState, Bundle that is null or has values from onSaveInstanceState
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -118,20 +128,32 @@ public class MainActivity extends AppCompatActivity {
 		skipButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mTimer.pressSkipButton();
+				mTimer.nextRound();
 			}
 		});
 
 		mTimer.updateCountdownText();
 	}
 
+	/**
+	 * Creates the menu on the toolbar
+	 * @param menu, Menu
+	 * @return created menu
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
-		getMenuInflater().inflate(R.menu.my_menu,menu);
+		getMenuInflater().inflate(R.menu.my_menu, menu);
 
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	/**
+	 *
+	 * @param item, the item selected in the menu. In this version there is only
+	 *              the camera button but other buttons might be added in future
+	 *              releases, that's why it's a switch.
+	 * @return selected item
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()){
@@ -145,27 +167,51 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * Set the countdown text (25:00, etc)
+	 * @param countdownText, String
+	 */
 	public void setCountdownText(String countdownText) {
 		mCountdownText.setText(countdownText);
 
 	}
 
+	/**
+	 * Set the the text for the start/stop button. Used when
+	 * pressed so it will be clear what happens if it's pressed
+	 * again
+	 * @param buttonTextId, int, the resource id for the text
+	 */
 	public void setStartStopButtonText(int buttonTextId){
 		mStartStopButton.setText(buttonTextId);
 	}
 
+	/**
+	 * @return the ImageView mImageView
+	 */
 	public ImageView getImageView() {
 		return mImageView;
 	}
 
+	/**
+	 * Called when the current window of the activity gains or loses
+	 * focus. Updates the mImageView with correct image.
+	 * @param hasFocus, boolean, if the window has focus or not
+	 */
 	public void onWindowFocusChanged(boolean hasFocus){
 		super.onWindowFocusChanged(hasFocus);
 		if(mCamera.getCameraFile() != null && mCamera.getCameraFile().exists() && hasFocus){
 			updateImageView();
 		}
-//			mCamera.updateImageViewFromFile();
 	}
 
+	/**
+	 * This method is used to get the right image resource id for a corresponding number.
+	 * Example:
+	 * @param imageNumber, int, if the number is 2:
+	 * @return imageResId = R.drawable.stretching_02
+	 * If there is no corresponding image for the number, image number 1 is chosen as default.
+	 */
 	public int getBreakImageResId(int imageNumber){
 		int imageResId;
 		switch (imageNumber){
@@ -232,6 +278,10 @@ public class MainActivity extends AppCompatActivity {
 		return imageResId;
 	}
 
+	/**
+	 * Updates the ImageView with a stretching image if the new event is a break or with the
+	 * saved photo if the event is work.
+	 */
 	public void updateImageView(){
 		if(mTimer.getTimerEventArrayList()
 				.get(mTimer.getActiveTimerEventIndex())
@@ -243,6 +293,10 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * Used to get a random number (1-19) to get a random stretching image.
+	 * Global variable mBreakImageNumber is set to make it possible to save it on rotation etc.
+	 */
 	public void setRandomBreakImageNumber(){
 		Random r = new Random();
 		int lowest = 1;
