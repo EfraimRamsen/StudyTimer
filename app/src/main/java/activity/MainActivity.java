@@ -143,28 +143,6 @@ public class MainActivity extends AppCompatActivity {
 		super.onWindowFocusChanged(hasFocus);
 		if(mCamera.getCameraFile() != null && mCamera.getCameraFile().exists() && hasFocus)
 			mCamera.updateImageViewFromFile();
-			mImageView.setBackgroundResource(android.R.color.transparent);//TODO fixa så den här raden bara körs när ny bild laddas in!
 	}
 
-//	protected void onActivityResult(int requestCode,
-//	                                int resultCode,
-//	                                Intent data) {
-//		if (requestCode == CAMERA_REQUEST_CODE) {
-//			if (resultCode == RESULT_OK) {
-//				//Bilden sparad till den plats vi angav i intentetIntent. Bilden kommer bytas ut
-//				//Då aktiviteten blir synlig
-//
-//
-//				/* Hade vi inte angivit platsen så hade vi istället kunnat
-//				 * göra som följer. Vi kan dock få en bild av sämre kvalitet
-//				 * imView.setImageBitmap((Bitmap) data.getExtras().get("data"));
-//				 */
-//			} else if (resultCode == RESULT_CANCELED) {
-//				// Användaren valde att inte ta en bild
-//			} else {
-//				mCamera.setCameraFile(null); // Något galet inträffade skippa att byta bilden till en egen
-//			}
-//		}
-//
-//	}
 }

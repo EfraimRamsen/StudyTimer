@@ -21,9 +21,13 @@ public class Camera {
 	private File mCameraFile;
 	public final static String FILE="com.example.studytimer.FILE";
 	private MainActivity mMainActivity;
+	private Uri mUri;
+
 	public Camera(MainActivity mainActivity){
 		mMainActivity = mainActivity;
-
+		setFileDir();
+		mUri = FileProvider.getUriForFile(mMainActivity.getApplicationContext(),
+				mMainActivity.getPackageName() + ".fileprovider", mCameraFile);
 	}
 
 	public File getCameraFile(){
@@ -47,33 +51,17 @@ public class Camera {
 		 * Observera att Kamera-appen måste kunna skriva till platsen
 		 * där filen finns
 		 */
-		Uri uri;
-		if (Build.VERSION.SDK_INT > 21) {
-			//Om nog sen version spara filen i vår local
-			//storage med en content-url detta är säkrare än den gamla metoden med
-			// file-url:er. Dels låter de oss spara filen var som helst utan att behöva
+			// låter oss spara filen var som helst utan att behöva
 			// bry os om att kameraappen har rättighet at skriva dit. Dessutom har vi
 			// om vi sparar filen på ett ställe vi har koll på kontroll över att ingen
 			// annan app sabbar något
 
-//			File dir = mMainActivity.getFilesDir();
-//			mCameraFile = new File(dir, "mypic.jpg");
-			setFileDir();
+//			setFileDir();
 
-			uri = FileProvider.getUriForFile(mMainActivity.getApplicationContext(),
-					mMainActivity.getPackageName() + ".fileprovider", mCameraFile);
-			i.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+			i.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
 			i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-		} else {
-			//Annars spara till Pictures-katalogen i external storage mha en file-url
-			//Anlernativ finns men är lite bökiga
-			//Man kan ev i daxläget fundera på att höja minSDKVersion för att undvika detta
-			File dir = mMainActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-			mCameraFile = new File(dir, "mypic.jpg");
-			uri = Uri.fromFile(mCameraFile);
-			i.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
-		}
 		//Starta aktiviteten
 		mMainActivity.startActivityForResult(
 				i, CAMERA_REQUEST_CODE);
