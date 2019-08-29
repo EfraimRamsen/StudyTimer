@@ -1,6 +1,9 @@
 package model;
 
-public class TimerEvent {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class TimerEvent implements Parcelable {
 
 	private String eventName;
 	private long startTime;
@@ -11,6 +14,24 @@ public class TimerEvent {
 		this. startTime = startTime;
 		this.isBreak = isBreak;
 	}
+
+	protected TimerEvent(Parcel in) {
+		eventName = in.readString();
+		startTime = in.readLong();
+		isBreak = in.readByte() != 0;
+	}
+
+	public static final Creator<TimerEvent> CREATOR = new Creator<TimerEvent>() {
+		@Override
+		public TimerEvent createFromParcel(Parcel in) {
+			return new TimerEvent(in);
+		}
+
+		@Override
+		public TimerEvent[] newArray(int size) {
+			return new TimerEvent[size];
+		}
+	};
 
 	public String getEventName() {
 		return eventName;
@@ -34,5 +55,17 @@ public class TimerEvent {
 
 	public void setBreak(boolean aBreak) {
 		isBreak = aBreak;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(eventName);
+		dest.writeLong(startTime);
+		dest.writeByte((byte) (isBreak ? 1 : 0));
 	}
 }

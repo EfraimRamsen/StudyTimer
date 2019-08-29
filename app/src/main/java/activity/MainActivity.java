@@ -30,6 +30,8 @@ import java.util.Random;
 
 import model.Camera;
 import model.Timer;
+import model.TimerEvent;
+
 import static model.Camera.FILE;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,14 +42,26 @@ public class MainActivity extends AppCompatActivity {
 	private Timer mTimer;
 	private Context mContext;
 	private Camera mCamera;
+	private int mBreakImageNumber;
 
 	public static final int CAMERA_REQUEST_CODE = 10;
-	private static final String KEY_ = "?";//TODO
+	private static final String KEY_TIMER_RUNNING = "trn";
+	private static final String KEY_TIME_LEFT_IN_MILLIS = "tlim";
+	private static final String KEY_TIMER_EVENT_ARRAYLIST = "teal";
+	private static final String KEY_ACTIVE_TIMER_EVENT_INDEX = "atei";
+	private static final String KEY_BREAK_IMAGE_NUMBER = "brin";
+
+
+
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState){
 		super.onSaveInstanceState(savedInstanceState);
-
+		savedInstanceState.putBoolean(KEY_TIMER_RUNNING,mTimer.getTimerRunning());
+		savedInstanceState.putLong(KEY_TIME_LEFT_IN_MILLIS,mTimer.getTimeLeftInMillis());
+		savedInstanceState.putParcelableArrayList(KEY_TIMER_EVENT_ARRAYLIST, mTimer.getTimerEventArrayList());
+		savedInstanceState.putInt(KEY_ACTIVE_TIMER_EVENT_INDEX, mTimer.getActiveTimerEventIndex());
+		savedInstanceState.putInt(KEY_BREAK_IMAGE_NUMBER,mBreakImageNumber);
 	}
 
 	@Override
@@ -57,16 +71,9 @@ public class MainActivity extends AppCompatActivity {
 		mTimer = new Timer(this);
 		mCamera = new Camera(this);
 
-		if(savedInstanceState != null){
-
-		}
 
 		setContentView(R.layout.activity_main);
 		mImageView = findViewById(R.id.photo_view);
-
-//		if(mCamera.getCameraFile() != null){
-//			mCamera.updateImageViewFromFile();
-//		}
 
 		Toolbar myToolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(myToolbar);
@@ -76,13 +83,23 @@ public class MainActivity extends AppCompatActivity {
 		Button resetButton = findViewById(R.id.button_reset);
 		Button skipButton = findViewById(R.id.button_skip);
 
+		// Everything loaded on restored instance state
+		if(savedInstanceState != null){
+			mTimer.setTimerRunning(savedInstanceState.getBoolean(KEY_TIMER_RUNNING));
+			mTimer.setTimeLeftInMillis(savedInstanceState.getLong(KEY_TIME_LEFT_IN_MILLIS));
+			mTimer.setTimerEventArrayList(savedInstanceState.<TimerEvent>getParcelableArrayList(KEY_TIMER_EVENT_ARRAYLIST));
+			mTimer.setActiveTimerEventIndex(savedInstanceState.getInt(KEY_ACTIVE_TIMER_EVENT_INDEX));
+			mBreakImageNumber = savedInstanceState.getInt(KEY_BREAK_IMAGE_NUMBER);
+
+			if(mTimer.getTimerRunning()){
+				mTimer.startTimer();
+			}
+			else{
+				mTimer.pauseTimer();
+			}
+		}
 
 		mContext = this.getApplicationContext();
-
-		//TODO Glöm inte fixa onSaveInstancestate etc.
-
-
-
 
 		mStartStopButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -218,19 +235,19 @@ public class MainActivity extends AppCompatActivity {
 	public void updateImageView(){
 		if(mTimer.getTimerEventArrayList()
 				.get(mTimer.getActiveTimerEventIndex())
-				.isBreak()){
-			//TEST, sätt random nummer sen
-			mImageView.setImageResource(getBreakImageResId(randomBetween(1,19)));//TODO
-//					mMainActivity.getBreakImageResId(1));
+				.isBreak()) {
+			mImageView.setImageResource(getBreakImageResId(mBreakImageNumber));
 		}
 		else{
 			mCamera.updateImageViewFromFile();
 		}
 	}
 
-	private int randomBetween(int lowest, int highest){
+	public void setRandomBreakImageNumber(){
 		Random r = new Random();
+		int lowest = 1;
+		int highest = 19;
 
-		return r.nextInt(highest - lowest)+ lowest;
+		mBreakImageNumber =  r.nextInt(highest - lowest)+ lowest;
 	}
 }

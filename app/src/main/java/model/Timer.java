@@ -1,5 +1,8 @@
 package model;
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.CountDownTimer;
 
 import java.util.ArrayList;
@@ -11,7 +14,8 @@ import com.example.studytimer.R;
 public class Timer {
 
 	private static final long START_TIME_IN_MILLIS_WORK = 1500000; //25 min
-	private static final long START_TIME_IN_MILLIS_BREAK = 300000; //5 min
+//	private static final long START_TIME_IN_MILLIS_BREAK = 300000; //5 min
+	private static final long START_TIME_IN_MILLIS_BREAK = 3000; // For testing, 3 seconds
 	private static final long START_TIME_IN_MILLIS_LONG_BREAK = 1200000; // 20 min
 
 	private MainActivity mMainActivity;
@@ -52,7 +56,13 @@ public class Timer {
 
 			@Override
 			public void onFinish() {
+				// Play notification sound when work session or break is over
+				Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				Ringtone r = RingtoneManager.getRingtone(mMainActivity.getApplicationContext(), notification);
+				r.play();
+
 				nextRound();
+
 			}
 		}.start();
 
@@ -91,6 +101,20 @@ public class Timer {
 			mActiveTimerEventIndex++;
 		}
 		resetToStartTime();
+		updateCountdownText();
+
+		if(isTimerRunning()){
+			pauseTimer();
+//			nextRound();
+			startTimer();
+		}
+		else{
+			pauseTimer();
+//			nextRound();
+			updateCountdownText();
+		}
+
+		mMainActivity.setRandomBreakImageNumber();
 		mMainActivity.updateImageView();
 	}
 
@@ -121,23 +145,48 @@ public class Timer {
 	}
 
 	public void pressSkipButton(){
-		if(isTimerRunning()){
-			pauseTimer();
-			nextRound();
-			startTimer();
-		}
-		else{
-			pauseTimer();
-			nextRound();
-			updateCountdownText();
-		}
+		nextRound();
+//		if(isTimerRunning()){
+//			pauseTimer();
+//			nextRound();
+//			startTimer();
+//		}
+//		else{
+//			pauseTimer();
+//			nextRound();
+//			updateCountdownText();
+//		}
 	}
 
 	public ArrayList<TimerEvent> getTimerEventArrayList() {
 		return mTimerEventArrayList;
 	}
 
+	public void setTimerEventArrayList(ArrayList<TimerEvent> timerEventArrayList) {
+		mTimerEventArrayList = timerEventArrayList;
+	}
+
 	public int getActiveTimerEventIndex() {
 		return mActiveTimerEventIndex;
+	}
+
+	public void setActiveTimerEventIndex(int activeTimerEventIndex) {
+		mActiveTimerEventIndex = activeTimerEventIndex;
+	}
+
+	public boolean getTimerRunning(){
+		return mTimerRunning;
+	}
+
+	public void setTimerRunning(boolean timerRunning) {
+		mTimerRunning = timerRunning;
+	}
+
+	public long getTimeLeftInMillis() {
+		return mTimeLeftInMillis;
+	}
+
+	public void setTimeLeftInMillis(long timeLeftInMillis) {
+		mTimeLeftInMillis = timeLeftInMillis;
 	}
 }
