@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import model.Camera;
 import model.Timer;
@@ -145,4 +146,88 @@ public class MainActivity extends AppCompatActivity {
 			mCamera.updateImageViewFromFile();
 	}
 
+	public int getBreakImageResId(int imageNumber){
+		int imageResId;
+		switch (imageNumber){
+			default:
+			case 1:
+				imageResId = R.drawable.stretching_01;
+				break;
+			case 2:
+				imageResId = R.drawable.stretching_02;
+				break;
+			case 3:
+				imageResId = R.drawable.stretching_03;
+				break;
+			case 4:
+				imageResId = R.drawable.stretching_04;
+				break;
+			case 5:
+				imageResId = R.drawable.stretching_05;
+				break;
+			case 6:
+				imageResId = R.drawable.stretching_06;
+				break;
+			case 7:
+				imageResId = R.drawable.stretching_07;
+				break;
+			case 8:
+				imageResId = R.drawable.stretching_08;
+				break;
+			case 9:
+				imageResId = R.drawable.stretching_09;
+				break;
+			case 10:
+				imageResId = R.drawable.stretching_10;
+				break;
+			case 11:
+				imageResId = R.drawable.stretching_11;
+				break;
+			case 12:
+				imageResId = R.drawable.stretching_12;
+				break;
+			case 13:
+				imageResId = R.drawable.stretching_13;
+				break;
+			case 14:
+				imageResId = R.drawable.stretching_14;
+				break;
+			case 15:
+				imageResId = R.drawable.stretching_15;
+				break;
+			case 16:
+				imageResId = R.drawable.stretching_16;
+				break;
+			case 17:
+				imageResId = R.drawable.stretching_17;
+				break;
+			case 18:
+				imageResId = R.drawable.stretching_18;
+				break;
+			case 19:
+				imageResId = R.drawable.stretching_19;
+				break;
+
+		}
+		return imageResId;
+	}
+
+	public void updateImageView(){
+		if(mTimer.getTimerEventArrayList()
+				.get(mTimer.getActiveTimerEventIndex())
+				.isBreak()){
+			//TEST, sätt random nummer sen
+			mImageView.setImageResource(getBreakImageResId(randomBetween(1,19)));//TODO
+//					mMainActivity.getBreakImageResId(1));
+		}
+		else{
+			mCamera.updateImageViewFromFile();
+		}
+	}
+
+	private int randomBetween(int lowest, int highest){
+		Random r = new Random();
+
+		return r.nextInt(highest - lowest)+ lowest;
+	}
 }
