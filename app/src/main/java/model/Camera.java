@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
 import android.provider.MediaStore;
 
 import androidx.core.content.FileProvider;
@@ -16,6 +14,10 @@ import activity.MainActivity;
 
 import static activity.MainActivity.CAMERA_REQUEST_CODE;
 
+/**
+ * The Camera class handles everything related to starting the external camera, saving the photo
+ * and loading it from the app storage.
+ */
 public class Camera {
 
 	private File mCameraFile;
@@ -23,6 +25,11 @@ public class Camera {
 	private MainActivity mMainActivity;
 	private Uri mUri;
 
+	/**
+	 * Constructor for the camera.
+	 * @param mainActivity, passed into the constructor to use some methods in MainActivity and
+	 *                      to set the imageView there in updateImageViewFromFile().
+	 */
 	public Camera(MainActivity mainActivity){
 		mMainActivity = mainActivity;
 		setFileDir();
@@ -30,43 +37,42 @@ public class Camera {
 				mMainActivity.getPackageName() + ".fileprovider", mCameraFile);
 	}
 
+	/**
+	 * Get method for the file where the photo is stored.
+	 * @return mCameraFile, File
+	 */
 	public File getCameraFile(){
 		return mCameraFile;
 	}
 
-	public void setCameraFile(File cameraFile){
-		mCameraFile = cameraFile;
-	}
-
+	/**
+	 * Set the directory where the file should be saved. Only one photo is used so when a new photo
+	 * is taken it will overwrite the old one since it will have the same directory and filename.
+	 */
 	public void setFileDir(){
 		File dir = mMainActivity.getFilesDir();
 		mCameraFile = new File(dir, "mypic.jpg");
 	}
 
+	/**
+	 * This method creates the intent for the camera and starts the camera activity.
+	 */
 	public void	startCamera() {
-		// Skapa ett intent för att ta en bild
+		// Create intent to take a photo
 		Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-		/* Bestäm vart filen ska sparas
-		 * Observera att Kamera-appen måste kunna skriva till platsen
-		 * där filen finns
-		 */
-			// låter oss spara filen var som helst utan att behöva
-			// bry os om att kameraappen har rättighet at skriva dit. Dessutom har vi
-			// om vi sparar filen på ett ställe vi har koll på kontroll över att ingen
-			// annan app sabbar något
-
-//			setFileDir();
-
 
 			i.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
 			i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-		//Starta aktiviteten
+		//Start activity
 		mMainActivity.startActivityForResult(
 				i, CAMERA_REQUEST_CODE);
 	}
 
+	/**
+	 * This method updates the imageView in MainActivity with the photo stored in the used
+	 * directory. Before setting the imageView it will scale the picture to fit it.
+	 */
 	public void updateImageViewFromFile() {
 
 		// Get the dimensions of the View
