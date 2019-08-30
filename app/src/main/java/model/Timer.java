@@ -56,7 +56,7 @@ public class Timer {
 			}
 
 			@Override
-			public void onFinish() {
+			public void onFinish() {//TODO varför körs onFinish flera gånger när ett event är slut?
 
 				nextRoundWithSound();
 

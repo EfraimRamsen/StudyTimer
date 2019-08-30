@@ -2,17 +2,9 @@ package activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.FileProvider;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,18 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.studytimer.R;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Random;
 
 import model.Camera;
 import model.Timer;
 import model.TimerEvent;
-
-import static model.Camera.FILE;
 
 /**
  * This class handles the buttons and imageView visible on activity_main.xml and my_menu.xml
